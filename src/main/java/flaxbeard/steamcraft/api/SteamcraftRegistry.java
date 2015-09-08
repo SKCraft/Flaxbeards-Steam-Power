@@ -1,11 +1,15 @@
 package flaxbeard.steamcraft.api;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import flaxbeard.steamcraft.api.book.BookPage;
 import flaxbeard.steamcraft.api.book.ICraftingPage;
 import flaxbeard.steamcraft.api.enhancement.IEnhancement;
 import flaxbeard.steamcraft.api.enhancement.IRocket;
 import flaxbeard.steamcraft.api.exosuit.ExosuitPlate;
 
+import flaxbeard.steamcraft.api.tool.ISteamToolUpgrade;
+import flaxbeard.steamcraft.api.tool.SteamToolSlot;
+import flaxbeard.steamcraft.item.tool.steam.ItemSteamToolUpgrade;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -13,9 +17,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.MutablePair;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class SteamcraftRegistry {
     public static ArrayList<ICrucibleMold> molds = new ArrayList<ICrucibleMold>();
@@ -32,6 +38,8 @@ public class SteamcraftRegistry {
     public static HashMap<String, ExosuitPlate> plates = new HashMap<String, ExosuitPlate>();
     public static HashMap<MutablePair<Integer, ExosuitPlate>, IIcon> plateIcons = new HashMap<MutablePair<Integer, ExosuitPlate>, IIcon>();
     public static HashMap<MutablePair<Item, Integer>, MutablePair<Item, Integer>> steamedFoods = new HashMap<MutablePair<Item, Integer>, MutablePair<Item, Integer>>();
+    public static List upgrades = new ArrayList<ItemSteamToolUpgrade>();
+
     private static int nextEnhancementID = 0;
 
     public static void addSteamFood(Item food1, int i, Item food2, int j) {
@@ -143,5 +151,12 @@ public class SteamcraftRegistry {
 
     public static void registerRocket(IRocket rocket) {
         rockets.add(rocket);
+    }
+
+    public static void registerSteamToolUpgrade(Item upgrade, SteamToolSlot slot, String info, int priority, String unlocalized) {
+        String resource = String.format("steamcraft:%s", unlocalized);
+        upgrade = new ItemSteamToolUpgrade(slot, resource, info, priority);
+        GameRegistry.registerItem(upgrade, unlocalized);
+        upgrades.add(upgrade);
     }
 }

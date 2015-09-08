@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import flaxbeard.steamcraft.Config;
 import flaxbeard.steamcraft.api.ISteamChargable;
+import flaxbeard.steamcraft.api.SteamcraftRegistry;
+import flaxbeard.steamcraft.api.tool.ISteamToolUpgrade;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -18,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 import org.apache.commons.lang3.tuple.MutablePair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -141,5 +144,4 @@ public class ItemSteamDrill extends ItemPickaxe implements ISteamChargable {
     public boolean canCharge(ItemStack me) {
         return true;
     }
-
 }
