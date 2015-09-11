@@ -128,7 +128,11 @@ public class TileEntityThumper extends SteamTransporterTileEntity implements ISt
                         if (hasTarget) {
                             Block block = worldObj.getBlock(target.posX, target.posY, target.posZ);
                             if (Config.dropItem) {
-                                block.dropBlockAsItem(worldObj, target.posX, target.posY, target.posZ, this.worldObj.getBlockMetadata(target.posX, target.posY, target.posZ), 0);
+                                if (Config.dropItemNearThumper) {
+                                    block.dropBlockAsItem(worldObj, xCoord, yCoord + 4, zCoord, this.worldObj.getBlockMetadata(target.posX, target.posY, target.posZ), 0);
+                                } else {
+                                    block.dropBlockAsItem(worldObj, target.posX, target.posY, target.posZ, this.worldObj.getBlockMetadata(target.posX, target.posY, target.posZ), 0);
+                                }
                             }
                             worldObj.setBlockToAir(target.posX, target.posY, target.posZ);
                         } else {
