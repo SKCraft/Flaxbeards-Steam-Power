@@ -442,7 +442,7 @@ public class TileEntitySmasher extends SteamTransporterTileEntity implements ISt
                 if (isSmashableOre && !this.noSmashDrops) {
                     //Chance you'll get double
                     if (worldObj.rand.nextInt(Config.chance) == 0)
-                    	output.stackSize *= 2;
+                    	output.stackSize *= Config.oreMultiplier;
                     EntityItem entityItem = new EntityItem(this.worldObj, x + 0.5F, y + 0.1F, z + 0.5F, output);
                     this.worldObj.spawnEntityInWorld(entityItem);
                     this.smooshedStack = null;
