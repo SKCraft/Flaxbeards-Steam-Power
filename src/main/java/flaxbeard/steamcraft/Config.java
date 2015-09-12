@@ -3,7 +3,6 @@ package flaxbeard.steamcraft;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -66,6 +65,7 @@ public class Config {
     public static int chance;
     public static int oreMultiplier;
     public static boolean dropItem;
+    public static boolean thumperSmashes;
     public static boolean dropItemNearThumper;
     public static boolean genPoorOre;
     public static int duplicateLogs;
@@ -238,6 +238,7 @@ public class Config {
         oreMultiplier = config.get("Machines", "Ore multiplier for the Rock Smasher (if multiplying)", 2).getInt();
         duplicateLogs = config.get("Machines", "Chance of duplicate drops from Buzzsaw (1 in X)", 6).getInt();
         dropItem = config.get("Machines", "Thumper drops items (may lag servers)", true).getBoolean(true);
+        thumperSmashes = config.get("Machines", "Enable smashing of items from the Thumper (using Rock Smasher mechanics)", false).getBoolean(false);
         dropItemNearThumper = config.get("Machines", "Drop items (if enabled) from the Thumper near the Thumper", false).getBoolean(false);
 
         // STEAM SYSTEM

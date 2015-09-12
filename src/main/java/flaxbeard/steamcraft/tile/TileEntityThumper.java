@@ -7,6 +7,8 @@ import flaxbeard.steamcraft.api.ISteamTransporter;
 import flaxbeard.steamcraft.api.tile.SteamTransporterTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -14,7 +16,9 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class TileEntityThumper extends SteamTransporterTileEntity implements ISteamTransporter {
@@ -128,10 +132,37 @@ public class TileEntityThumper extends SteamTransporterTileEntity implements ISt
                         if (hasTarget) {
                             Block block = worldObj.getBlock(target.posX, target.posY, target.posZ);
                             if (Config.dropItem) {
+                                int dropX, dropY, dropZ;
+
                                 if (Config.dropItemNearThumper) {
-                                    block.dropBlockAsItem(worldObj, xCoord, yCoord + 4, zCoord, this.worldObj.getBlockMetadata(target.posX, target.posY, target.posZ), 0);
+                                    dropX = xCoord;
+                                    dropY = yCoord + 4;
+                                    dropZ = zCoord;
                                 } else {
-                                    block.dropBlockAsItem(worldObj, target.posX, target.posY, target.posZ, this.worldObj.getBlockMetadata(target.posX, target.posY, target.posZ), 0);
+                                    dropX = target.posX;
+                                    dropY = target.posY;
+                                    dropZ = target.posZ;
+                                }
+
+                                if (Config.thumperSmashes) {
+                                    int blockMeta = this.worldObj.getBlockMetadata(target.posX, target.posY, target.posZ);
+                                    ArrayList<ItemStack> drops = block.getDrops(worldObj, target.posX, target.posY, target.posZ, blockMeta, 0);
+                                    float dropChance = ForgeEventFactory.fireBlockHarvesting(drops, worldObj, block, target.posX, target.posY, target.posZ, blockMeta, 0, 1.0f, false, null);
+                                    for (ItemStack drop : drops) {
+                                        if (worldObj.rand.nextFloat() <= dropChance) {
+                                            ItemStack smashedItem = TileEntitySmasher.REGISTRY.getOutput(drop);
+                                            if (smashedItem != null) {
+                                                if (worldObj.rand.nextInt(Config.chance) == 0)
+                                                    smashedItem.stackSize *= Config.oreMultiplier;
+                                                drop = smashedItem;
+                                            }
+
+                                            EntityItem entityItem = new EntityItem(this.worldObj, dropX + 0.5F, dropY + 0.1F, dropZ + 0.5F, drop);
+                                            this.worldObj.spawnEntityInWorld(entityItem);
+                                        }
+                                    }
+                                } else {
+                                    block.dropBlockAsItem(worldObj, dropX, dropY, dropZ, this.worldObj.getBlockMetadata(target.posX, target.posY, target.posZ), 0);
                                 }
                             }
                             worldObj.setBlockToAir(target.posX, target.posY, target.posZ);
